@@ -1,6 +1,4 @@
 package FuelPass.Dev.FuelPass.Controller;
 
-public class vehicleController {
-awefhaheuh
+public class VehicleController {
 }
-
