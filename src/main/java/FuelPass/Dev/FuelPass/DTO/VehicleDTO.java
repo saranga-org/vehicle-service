@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class VehicleDTO {
     private String regNo;
     private String chassisNo;
+    private String userId;
     private VehicleType vehicleType;
     private FuelType fuelType;
 }
