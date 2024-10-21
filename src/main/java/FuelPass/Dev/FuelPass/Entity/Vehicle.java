@@ -23,6 +23,9 @@ public class Vehicle {
     @Column(name = "chassisNo", nullable = false)
     private String chassisNo;
 
+    @Column(name = "userId", nullable = false)
+    private String userId;
+
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "vehicleType", nullable = false)
     private VehicleType vehicleType;
