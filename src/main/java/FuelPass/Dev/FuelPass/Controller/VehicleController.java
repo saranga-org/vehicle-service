@@ -20,7 +20,7 @@ public class VehicleController {
     private VehicleService vehicleService;
 
 
-    @PostMapping("/saveVehicle")
+    @PostMapping("/")
     public ResponseEntity<VehicleDTO> saveVehicle(@RequestBody VehicleDTO vehicleDTO) {
         try {
             VehicleDTO savedVehicle = vehicleService.saveVehicle(vehicleDTO);
@@ -32,7 +32,7 @@ public class VehicleController {
         }
     }
 
-    @GetMapping("/getVehicles")
+    @GetMapping("/")
     public ResponseEntity<List<VehicleDTO>> getVehicles() {
         try {
             List<VehicleDTO> vehicles = vehicleService.getAllVehicles();
