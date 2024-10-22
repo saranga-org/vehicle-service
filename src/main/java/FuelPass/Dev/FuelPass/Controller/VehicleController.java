@@ -2,6 +2,7 @@ package FuelPass.Dev.FuelPass.Controller;
 
 
 import FuelPass.Dev.FuelPass.DTO.VehicleDTO;
+import FuelPass.Dev.FuelPass.Service.VehicleHeaderService;
 import FuelPass.Dev.FuelPass.Service.VehicleService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,26 @@ import java.util.List;
 public class VehicleController {
 
     private VehicleService vehicleService;
+    private VehicleHeaderService vehicleHeaderService;
 
 
     @PostMapping("/")
     public ResponseEntity<VehicleDTO> saveVehicle(@RequestBody VehicleDTO vehicleDTO) {
         try {
-            VehicleDTO savedVehicle = vehicleService.saveVehicle(vehicleDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedVehicle);
-        } catch (IllegalArgumentException e) {
+            boolean isValidate = vehicleHeaderService.verifyVehicle(vehicleDTO);
+            if(isValidate){
+                try {
+                    VehicleDTO savedVehicle = vehicleService.saveVehicle(vehicleDTO);
+                    return ResponseEntity.status(HttpStatus.CREATED).body(savedVehicle);
+                } catch (IllegalArgumentException e) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                } catch (Exception e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+                }
+            }else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+        }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

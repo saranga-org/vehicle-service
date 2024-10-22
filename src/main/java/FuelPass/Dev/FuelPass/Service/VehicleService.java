@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -25,7 +26,7 @@ public class VehicleService {
     public VehicleDTO saveVehicle(VehicleDTO vehicleDTO) {
         try {
             // Validate mandatory fields
-            if (vehicleDTO.getRegNo() == null || vehicleDTO.getRegNo().isEmpty() ||
+            if (vehicleDTO.getVehicleNumber() == null || vehicleDTO.getVehicleNumber().isEmpty() ||
                     vehicleDTO.getChassisNo() == null || vehicleDTO.getChassisNo().isEmpty() ||
                     vehicleDTO.getVehicleType() == null || vehicleDTO.getFuelType() == null) {
                 throw new IllegalArgumentException("Required fields cannot be null or empty");
@@ -33,7 +34,7 @@ public class VehicleService {
 
             // Map VehicleDTO to Vehicle entity
             Vehicle vehicle = new Vehicle();
-            vehicle.setRegNo(vehicleDTO.getRegNo());
+            vehicle.setVehicleNumber(vehicleDTO.getVehicleNumber());
             vehicle.setChassisNo(vehicleDTO.getChassisNo());
             vehicle.setVehicleType(vehicleDTO.getVehicleType());
             vehicle.setFuelType(vehicleDTO.getFuelType());
@@ -62,7 +63,7 @@ public class VehicleService {
             // Check if the list is empty and handle it if needed
             if (vehicleList.isEmpty()) {
                 throw new NoSuchElementException("No vehicles found");
-            }
+            }  
 
             // Map the list of Vehicle entities to a list of VehicleDTOs
             return modelMapper.map(vehicleList, new TypeToken<List<VehicleDTO>>(){}.getType());
@@ -74,6 +75,8 @@ public class VehicleService {
             throw new RuntimeException("An error occurred while retrieving vehicles", e);
         }
     }
+
+
 
 
 }

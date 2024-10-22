@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "vehicles")
+@Table(name = "vehicles_validate")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Vehicle {
+public class VehicleHeader {
     @Id
     @GeneratedValue
     private int id;
@@ -33,5 +33,4 @@ public class Vehicle {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "fuelType", nullable = false)
     private FuelType fuelType;
-
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class VehicleDTO {
+public class VehicleHeaderDTO {
     private String vehicleNumber;
     private String chassisNo;
     private String userName;
