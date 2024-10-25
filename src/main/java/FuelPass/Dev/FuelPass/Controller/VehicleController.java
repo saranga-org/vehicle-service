@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "api/vehicle/create")
+@RequestMapping(value = "api/vehicle")
 @CrossOrigin
 @AllArgsConstructor
 public class VehicleController {
@@ -30,7 +30,7 @@ public class VehicleController {
     private JwtTokenService jwtTokenService;
 
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> saveVehicle(@RequestBody VehicleDTO vehicleDTO, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
 
@@ -73,18 +73,17 @@ public class VehicleController {
     }
 
 
-    @GetMapping("/")
-    public ResponseEntity<List<VehicleDTO>> getVehicles() {
-        try {
-            List<VehicleDTO> vehicles = vehicleService.getAllVehicles();
+    @GetMapping("/all")
+    public ResponseEntity<?> getVehiclesByUser(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
 
-            if (vehicles.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(vehicles);
-            }
-
-            return ResponseEntity.status(HttpStatus.OK).body(vehicles);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header");
         }
+
+        String token = authHeader.substring(7);
+        String userName = jwtTokenService.getUsernameFromToken(token);
+        List<VehicleDTO> vehicleDTOs = vehicleService.getVehiclesByUser(userName);
+        return ResponseEntity.ok(vehicleDTOs);
     }
 }
