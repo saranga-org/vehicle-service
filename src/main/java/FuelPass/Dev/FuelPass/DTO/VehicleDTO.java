@@ -15,4 +15,5 @@ public class VehicleDTO {
     private String userName;
     private VehicleType vehicleType;
     private FuelType fuelType;
+    private String contactNo;
 }

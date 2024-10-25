@@ -24,23 +24,21 @@ public class VehicleHeaderService {
     private ModelMapper modelMapper;
 
     public boolean verifyVehicle(VehicleDTO vehicleDTO) {
-        VehicleHeaderDTO vehicleHeaderDTO = modelMapper.map(vehicleDTO, VehicleHeaderDTO.class);
+        Optional<VehicleHeader> currentVehicle = vehicleHeaderRepo.findByVehicleNumber(vehicleDTO.getVehicleNumber());
 
-        System.out.println("hhh");
-        System.out.println(vehicleHeaderDTO.getVehicleNumber());
-        Optional<VehicleHeader> currentVehicle = vehicleHeaderRepo.findByVehicleNumber(vehicleHeaderDTO.getVehicleNumber());
-        System.out.println(currentVehicle.isPresent());
-        if(currentVehicle.isPresent()){
-            if (vehicleHeaderDTO.getVehicleNumber() == currentVehicle.get().getVehicleNumber() && vehicleHeaderDTO.getChassisNo() == currentVehicle.get().getChassisNo() &&
-                    vehicleHeaderDTO.getFuelType() == currentVehicle.get().getFuelType() && vehicleHeaderDTO.getVehicleType() == currentVehicle.get().getVehicleType() &&
-                    vehicleHeaderDTO.getUserName() == currentVehicle.get().getUserName()) {
-                System.out.println("ggg");
+        if (currentVehicle.isPresent()) {
+            VehicleHeader vehicleHeader = currentVehicle.get();
+
+            if (vehicleDTO.getVehicleNumber().equals(vehicleHeader.getVehicleNumber()) &&
+                    vehicleDTO.getChassisNo().equals(vehicleHeader.getChassisNo()) &&
+                    vehicleDTO.getFuelType() == vehicleHeader.getFuelType() &&
+                    vehicleDTO.getVehicleType() == vehicleHeader.getVehicleType()) {
                 return true;
+            } else {
+                throw new IllegalArgumentException("Vehicle data mismatch.");
             }
         }
-        else{
-            return false;
-        }
-        return false;
+        throw new IllegalArgumentException("Vehicle not found in header database.");
     }
+
 }

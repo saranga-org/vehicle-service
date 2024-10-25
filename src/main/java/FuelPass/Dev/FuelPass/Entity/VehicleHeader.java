@@ -14,8 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class VehicleHeader {
     @Id
-    @GeneratedValue
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "vehicleNumber", nullable = false)
     private String vehicleNumber;
@@ -23,14 +23,11 @@ public class VehicleHeader {
     @Column(name = "chassisNo", nullable = false)
     private String chassisNo;
 
-    @Column(name = "userName", nullable = false)
-    private String userName;
-
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "vehicleType", nullable = false)
     private VehicleType vehicleType;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "fuelType", nullable = false)
     private FuelType fuelType;
 }

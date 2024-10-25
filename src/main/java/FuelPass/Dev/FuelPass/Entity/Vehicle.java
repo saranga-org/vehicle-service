@@ -13,9 +13,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Vehicle {
+
     @Id
-    @GeneratedValue
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "vehicleNumber", nullable = false)
     private String vehicleNumber;
@@ -26,11 +27,14 @@ public class Vehicle {
     @Column(name = "userName", nullable = false)
     private String userName;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "contact_No", nullable = false)
+    private String contactNo;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "vehicleType", nullable = false)
     private VehicleType vehicleType;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "fuelType", nullable = false)
     private FuelType fuelType;
 
