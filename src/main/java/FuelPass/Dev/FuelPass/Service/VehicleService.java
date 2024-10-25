@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -91,6 +92,15 @@ public class VehicleService {
         ResponseEntity<String> response = fuelQuotaServiceClient.resetQrCode(vehicleNo);
         return response.getBody();
     }
+
+    public List<VehicleDTO> getVehiclesByUser(String userName) {
+        List<Vehicle> vehicleList = vehicleRepo.findByUserName(userName);
+
+        return vehicleList.stream()
+                .map(vehicle -> modelMapper.map(vehicle, VehicleDTO.class))
+                .collect(Collectors.toList());
+    }
+
 
 
 }
