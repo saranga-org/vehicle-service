@@ -1,15 +1,20 @@
 package FuelPass.Dev.FuelPass.Service;
 
+import FuelPass.Dev.FuelPass.DTO.FuelQuotaRequest;
 import FuelPass.Dev.FuelPass.DTO.VehicleDTO;
+import FuelPass.Dev.FuelPass.Entity.FuelType;
 import FuelPass.Dev.FuelPass.Entity.Vehicle;
+import FuelPass.Dev.FuelPass.FeignClient.FuelQuotaServiceClient;
 import FuelPass.Dev.FuelPass.Repo.VehicleRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -22,36 +27,37 @@ public class VehicleService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private final FuelQuotaServiceClient fuelQuotaServiceClient;
+
     public VehicleDTO saveVehicle(VehicleDTO vehicleDTO) {
+        System.out.println(vehicleDTO);
         try {
-            // Validate mandatory fields
-            if (vehicleDTO.getRegNo() == null || vehicleDTO.getRegNo().isEmpty() ||
-                    vehicleDTO.getChassisNo() == null || vehicleDTO.getChassisNo().isEmpty() ||
-                    vehicleDTO.getVehicleType() == null || vehicleDTO.getFuelType() == null) {
-                throw new IllegalArgumentException("Required fields cannot be null or empty");
+            // Validate FuelType from the DTO before mapping
+            if (vehicleDTO.getFuelType() == null || !isValidFuelType(vehicleDTO.getFuelType())) {
+                throw new IllegalArgumentException("Invalid fuel type: " + vehicleDTO.getFuelType());
             }
 
-            // Map VehicleDTO to Vehicle entity
-            Vehicle vehicle = new Vehicle();
-            vehicle.setRegNo(vehicleDTO.getRegNo());
-            vehicle.setChassisNo(vehicleDTO.getChassisNo());
-            vehicle.setVehicleType(vehicleDTO.getVehicleType());
-            vehicle.setFuelType(vehicleDTO.getFuelType());
+            Vehicle vehicle = modelMapper.map(vehicleDTO, Vehicle.class);
 
-            // Save the vehicle
             Vehicle savedVehicle = vehicleRepo.save(vehicle);
 
-            // Map back to VehicleDTO and return
+            addFuelQuota(vehicleDTO);
+
             return modelMapper.map(savedVehicle, VehicleDTO.class);
 
         } catch (IllegalArgumentException e) {
-            // Handle validation error
             throw new IllegalArgumentException("Validation Error: " + e.getMessage());
         } catch (Exception e) {
-            // Handle general exceptions
             throw new RuntimeException("An error occurred while saving the vehicle", e);
         }
     }
+
+    private boolean isValidFuelType(FuelType fuelType) {
+        return Arrays.stream(FuelType.values())
+                .anyMatch(validType -> validType.equals(fuelType));
+    }
+
 
 
     public List<VehicleDTO> getAllVehicles() {
@@ -62,7 +68,7 @@ public class VehicleService {
             // Check if the list is empty and handle it if needed
             if (vehicleList.isEmpty()) {
                 throw new NoSuchElementException("No vehicles found");
-            }
+            }  
 
             // Map the list of Vehicle entities to a list of VehicleDTOs
             return modelMapper.map(vehicleList, new TypeToken<List<VehicleDTO>>(){}.getType());
@@ -73,6 +79,17 @@ public class VehicleService {
             // Handle unexpected errors
             throw new RuntimeException("An error occurred while retrieving vehicles", e);
         }
+    }
+
+    public void addFuelQuota(VehicleDTO vehicleDTO) {
+        FuelQuotaRequest fuelQuotaRequest =new FuelQuotaRequest(vehicleDTO.getVehicleNumber(),vehicleDTO.getVehicleType().name(),vehicleDTO.getFuelType().name(),30,vehicleDTO.getContactNo());
+        ResponseEntity<String> response = fuelQuotaServiceClient.addFuelQuota(fuelQuotaRequest);
+        response.getBody();
+    }
+
+    public String resetQrCode(String vehicleNo) {
+        ResponseEntity<String> response = fuelQuotaServiceClient.resetQrCode(vehicleNo);
+        return response.getBody();
     }
 
 

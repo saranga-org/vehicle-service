@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "vehicles")
+@Table(name = "vehicles_validate")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Vehicle {
-
+public class VehicleHeader {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,12 +23,6 @@ public class Vehicle {
     @Column(name = "chassisNo", nullable = false)
     private String chassisNo;
 
-    @Column(name = "userName", nullable = false)
-    private String userName;
-
-    @Column(name = "contact_No", nullable = false)
-    private String contactNo;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "vehicleType", nullable = false)
     private VehicleType vehicleType;
@@ -37,5 +30,4 @@ public class Vehicle {
     @Enumerated(EnumType.STRING)
     @Column(name = "fuelType", nullable = false)
     private FuelType fuelType;
-
 }
