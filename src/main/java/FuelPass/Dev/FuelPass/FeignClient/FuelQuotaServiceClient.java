@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "fuelQuotaServiceClient", url = "http://localhost:8083/api/fuel-quota")
+@FeignClient(name = "fuelQuotaServiceClient", url = "http://localhost:8084/api")
 public interface FuelQuotaServiceClient {
-    @PostMapping("/fuel-quota")
+    @PostMapping("/fuel-quota/add")
     ResponseEntity<String> addFuelQuota(@RequestBody FuelQuotaRequest fuelQuotaRequest);
 
     @PutMapping("/fuel-quota/reset-qrcode")
